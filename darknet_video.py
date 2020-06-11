@@ -7,6 +7,8 @@ import numpy as np
 import time
 import darknet
 
+# integer values for pixel locations
+# returns topLeftX, topLeftY, bottomRightX, bottomRightY
 def convertBack(x, y, w, h):
     xmin = int(round(x - (w / 2)))
     xmax = int(round(x + (w / 2)))

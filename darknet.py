@@ -82,6 +82,8 @@ class METADATA(Structure):
 #lib = CDLL("/home/pjreddie/documents/darknet/libdarknet.so", RTLD_GLOBAL)
 #lib = CDLL("libdarknet.so", RTLD_GLOBAL)
 hasGPU = True
+# checking if running on windows
+# deciding between GPU and CPU
 if os.name == "nt":
     cwd = os.path.dirname(__file__)
     os.environ['PATH'] = cwd + ';' + os.environ['PATH']
@@ -124,7 +126,10 @@ if os.name == "nt":
             lib = CDLL(winGPUdll, RTLD_GLOBAL)
             print("Environment variables indicated a CPU run, but we didn't find `"+winNoGPUdll+"`. Trying a GPU run anyway.")
 else:
-    lib = CDLL("./libdark.so", RTLD_GLOBAL)
+    lib = CDLL("./libdark.so", RTLD_GLOBAL) # loading library
+
+# Since we have loaded library, we can access all the functions defined inside it
+# ctypes does basic type conversion, that's to pass arguments to C we convert them to ctypes
 lib.network_width.argtypes = [c_void_p]
 lib.network_width.restype = c_int
 lib.network_height.argtypes = [c_void_p]
@@ -252,6 +257,7 @@ def detect(net, meta, image, thresh=.5, hier_thresh=.5, nms=.45, debug= False):
     #pylint: disable= C0321
     im = load_image(image, 0, 0)
     if debug: print("Loaded image")
+    # perform detections
     ret = detect_image(net, meta, im, thresh, hier_thresh, nms, debug)
     free_image(im)
     if debug: print("freed image")
@@ -361,6 +367,7 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
         }
     """
     # Import the global variables. This lets us instance Darknet once, then just call performDetect() again without instancing again
+    # Initializing detector and checking if path are correct
     global metaMain, netMain, altNames #pylint: disable=W0603
     assert 0 < thresh < 1, "Threshold should be a float between zero and one (non-inclusive)"
     if not os.path.exists(configPath):
