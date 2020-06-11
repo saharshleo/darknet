@@ -26,6 +26,15 @@ Windows Python 2.7 version: https://github.com/AlexeyAB/darknet/blob/fc496d52bf2
 @author: Philip Kahn
 @date: 20180503
 """
+
+'''
+FLOW::>
+
+main --> performDetect(see function headiing) --> detect --> detect_image
+
+detect_image calls predict_image --> get_network_boxes --> do_nms_sort
+this functions are defined in libdark.so
+'''
 #pylint: disable=R, W0401, W0614, W0703
 from ctypes import *
 import math
